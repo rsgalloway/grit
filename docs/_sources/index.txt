@@ -11,44 +11,39 @@ Grit is a simple and light-weight git repository manager or git-compatible digit
 asset management system with limited remote object proxying, a http back-end and
 easy to use command line, python and web user interfaces. 
 
-This is early prototype code, is missing many important features and probably won't
-work for you
+.. note:: This is early prototype code, is missing many important features and probably won't work for you
 
 *Features*
 
-  * Python WSGI "Smart HTTP" server
-  * Limited remote object proxying
-  * Stream blob data from remote repositories
-  * Hierarchical repos with top-down inheritance
-  * Check out individual blobs
-  * Python and HTTP+JSON read/write API
-  * Supports a centralized workflow
-  * Command line, Python and web UIs
-  * Git not required
-
-*Known issues as of this release*
-
-  * Currently no support for diff, status, submodule or tag
-  * Renaming a repo breaks external references
-  * Items tab shows flat list of items, not heirarchical
-  * Checking in files over HTTP is broken (use git instead)
-  * Poor performance with large binary files
-  * Can only checkout repos and blobs, not trees
-  * Blobs lack icons in the web UI
-  * Parent links in web UI are broken
+- Python WSGI "Smart HTTP" server
+- Limited remote object proxying
+- Stream blob data from remote repositories
+- Hierarchical repos with top-down inheritance
+- Check out individual blobs
+- Python and HTTP+JSON read/write API
+- Supports a centralized workflow
+- Command line, Python and web UIs
+- Git not required
 
 *Some noted differences from git*
 
-  * A branch in grit is different from a branch in git in that a branch is a child of a 
-    repo and inherits its files automatically. Files can be overwritten at the branch level. 
-  * Grit supports (limited) remote object proxying, so you can browse and get information about 
-    an object without checking it out.
-  * Checkouts in grit are different in that you can check out a given version (latest by default) 
-    of a repo, or a single file.
+- A branch in grit is different from a branch in git in that a branch is a child of a repo and inherits its files automatically. Files can be overwritten at the branch level. 
+- Grit supports (limited) remote object proxying, so you can browse and get information about an object without checking it out.
+- Checkouts in grit are different in that you can check out a given version (latest by default) of a repo, or a single file.
 
+*Known issues as of this release*
 
-Installation
-============
+- Currently no support for diff, status, submodule or tag
+- Renaming a repo breaks external references
+- Items tab shows flat list of items, not heirarchical
+- Checking in files over HTTP is broken (use git instead)
+- Poor performance with large binary files
+- Can only checkout repos and blobs, not trees
+- Blobs lack icons in the web UI
+- Parent links in web UI are broken
+
+Get Grit
+========
 
 Installing Grit is easily done using
 `setuptools`_. Assuming it is
@@ -58,8 +53,8 @@ installed, just run the following from the command-line:
 
     $ easy_install grit
 
-* `setuptools`_
-* `install setuptools <http://peak.telecommunity.com/DevCenter/EasyInstall#installation-instructions>`_
+- `setuptools`_
+- `install setuptools <http://peak.telecommunity.com/DevCenter/EasyInstall#installation-instructions>`
 
 .. _setuptools: http://peak.telecommunity.com/DevCenter/setuptools
 
@@ -68,6 +63,7 @@ script:
 
 .. sourcecode:: none
 
+    $ git clone https://github.com/rsgalloway/grit.git
     $ python setup.py install
 
 Requirements
@@ -76,9 +72,9 @@ Requirements
 Python and the following Python packages are required for Grit to work. Currently, git is required for 
 checking in files and some operations like clone.
 
-  * Python (2.6.5)
-  * Dulwich (0.7.0)
-  * Git (optional)
+- Python (2.6.5)
+- Dulwich (0.7.0)
+- Git (optional)
 
 Tutorial
 ========
@@ -118,14 +114,27 @@ To get thumbnails in the web UI, check in an appropriate png file called "thumb.
 Adding files
 ************
 
-Currently, adding files is only supported on local repositories using grit or git itself, you can't check in
-files over HTTP yet. This is a known issue and will be addressed in a near future release. Let's check out 
-the "wolf" branch with git and add a file called "thumb.png". You can also use the Python API to do this 
-using the addItem method.
+Using grit, checkin a file to a remote repo ::
 
-Using grit ::
+    $ grit ci http://locahost/animal/mammal/wolf thumb.png
+
+... or to a local repo ::
 
     $ grit ci /tmp/projects/animal/mammal/wolf thumb.png
+
+Using Python ::
+
+    >>> from grit import Repo
+    >>> r = Repo('/tmp/projects/animal/mammal/wolf')
+    >>> r.addFile('/path/to/thumb.png', 'Publishing thumbnail')
+
+Adding multiple items to the same version ::
+
+    >>> from grit import Repo, Item
+    >>> v = r.addVersion()
+    >>> v.addFile(path='/path/to/fileA')
+    >>> v.addFile(path='/path/to/fileB')
+    >>> v.save('Publishing files')
 
 Using git ::
 
@@ -135,19 +144,6 @@ Using git ::
     $ git commit thumb.png "adding thumb"
     $ git push
 
-Using the Python API ::
-
-  >>> from grit import Repo
-  >>> r = Repo('/tmp/projects/animal/mammal/wolf')
-  >>> r.addFile('/path/to/thumb.png', 'Publishing thumbnail')
-
-Adding multiple items to the same version ::
-
-  >>> from grit import Item
-  >>> v = r.addVersion()
-  >>> v.addFile(path='/path/to/fileA')
-  >>> v.addFile(path='/path/to/fileB')
-  >>> v.save('Publishing files')
 
 Checking out repos
 ******************
@@ -163,16 +159,6 @@ Also with grit, you can check out a single file if you wish. ::
 
     $ grit co http://localhost/animal/mammal/wolf/thumb.png
 
-Source Code
-===========
-
-Grit's git repo is available on GitHub, which can be browsed at:
-
- * https://github.com/rsgalloway/grit
-
-and cloned using ::
-
-    $ git clone git://github.com/rsgalloway/grit.git
 
 API Reference
 =============

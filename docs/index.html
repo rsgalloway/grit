@@ -51,11 +51,12 @@
 <p>Grit is a simple and light-weight git repository manager or git-compatible digital
 asset management system with limited remote object proxying, a http back-end and
 easy to use command line, python and web user interfaces.</p>
-<p>This is early prototype code, is missing many important features and probably won&#8217;t
-work for you</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This is early prototype code, is missing many important features and probably won&#8217;t work for you</p>
+</div>
 <p><em>Features</em></p>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
 <li>Python WSGI &#8220;Smart HTTP&#8221; server</li>
 <li>Limited remote object proxying</li>
 <li>Stream blob data from remote repositories</li>
@@ -66,10 +67,14 @@ work for you</p>
 <li>Command line, Python and web UIs</li>
 <li>Git not required</li>
 </ul>
-</div></blockquote>
+<p><em>Some noted differences from git</em></p>
+<ul class="simple">
+<li>A branch in grit is different from a branch in git in that a branch is a child of a repo and inherits its files automatically. Files can be overwritten at the branch level.</li>
+<li>Grit supports (limited) remote object proxying, so you can browse and get information about an object without checking it out.</li>
+<li>Checkouts in grit are different in that you can check out a given version (latest by default) of a repo, or a single file.</li>
+</ul>
 <p><em>Known issues as of this release</em></p>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
 <li>Currently no support for diff, status, submodule or tag</li>
 <li>Renaming a repo breaks external references</li>
 <li>Items tab shows flat list of items, not heirarchical</li>
@@ -79,20 +84,8 @@ work for you</p>
 <li>Blobs lack icons in the web UI</li>
 <li>Parent links in web UI are broken</li>
 </ul>
-</div></blockquote>
-<p><em>Some noted differences from git</em></p>
-<blockquote>
-<div><ul class="simple">
-<li>A branch in grit is different from a branch in git in that a branch is a child of a
-repo and inherits its files automatically. Files can be overwritten at the branch level.</li>
-<li>Grit supports (limited) remote object proxying, so you can browse and get information about
-an object without checking it out.</li>
-<li>Checkouts in grit are different in that you can check out a given version (latest by default)
-of a repo, or a single file.</li>
-</ul>
-</div></blockquote>
-<div class="section" id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="get-grit">
+<h2>Get Grit<a class="headerlink" href="#get-grit" title="Permalink to this headline">¶</a></h2>
 <p>Installing Grit is easily done using
 <a class="reference external" href="http://peak.telecommunity.com/DevCenter/setuptools">setuptools</a>. Assuming it is
 installed, just run the following from the command-line:</p>
@@ -101,24 +94,23 @@ installed, just run the following from the command-line:</p>
 </div>
 <ul class="simple">
 <li><a class="reference external" href="http://peak.telecommunity.com/DevCenter/setuptools">setuptools</a></li>
-<li><a class="reference external" href="http://peak.telecommunity.com/DevCenter/EasyInstall#installation-instructions">install setuptools</a></li>
+<li><cite>install setuptools &lt;http://peak.telecommunity.com/DevCenter/EasyInstall#installation-instructions&gt;</cite></li>
 </ul>
 <p>Alternatively, you can install from the distribution using the <tt class="docutils literal"><span class="pre">setup.py</span></tt>
 script:</p>
-<div class="highlight-none"><div class="highlight"><pre>$ python setup.py install
+<div class="highlight-none"><div class="highlight"><pre>$ git clone https://github.com/rsgalloway/grit.git
+$ python setup.py install
 </pre></div>
 </div>
 <div class="section" id="requirements">
 <h3>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h3>
 <p>Python and the following Python packages are required for Grit to work. Currently, git is required for
 checking in files and some operations like clone.</p>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
 <li>Python (2.6.5)</li>
 <li>Dulwich (0.7.0)</li>
 <li>Git (optional)</li>
 </ul>
-</div></blockquote>
 </div>
 </div>
 <div class="section" id="tutorial">
@@ -151,12 +143,25 @@ To get thumbnails in the web UI, check in an appropriate png file called &#8220;
 </div>
 <div class="section" id="adding-files">
 <h3>Adding files<a class="headerlink" href="#adding-files" title="Permalink to this headline">¶</a></h3>
-<p>Currently, adding files is only supported on local repositories using grit or git itself, you can&#8217;t check in
-files over HTTP yet. This is a known issue and will be addressed in a near future release. Let&#8217;s check out
-the &#8220;wolf&#8221; branch with git and add a file called &#8220;thumb.png&#8221;. You can also use the Python API to do this
-using the addItem method.</p>
-<p>Using grit</p>
+<p>Using grit, checkin a file to a remote repo</p>
+<div class="highlight-python"><pre>$ grit ci http://locahost/animal/mammal/wolf thumb.png</pre>
+</div>
+<p>... or to a local repo</p>
 <div class="highlight-python"><pre>$ grit ci /tmp/projects/animal/mammal/wolf thumb.png</pre>
+</div>
+<p>Using Python</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">grit</span> <span class="kn">import</span> <span class="n">Repo</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">Repo</span><span class="p">(</span><span class="s">&#39;/tmp/projects/animal/mammal/wolf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">addFile</span><span class="p">(</span><span class="s">&#39;/path/to/thumb.png&#39;</span><span class="p">,</span> <span class="s">&#39;Publishing thumbnail&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Adding multiple items to the same version</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">grit</span> <span class="kn">import</span> <span class="n">Repo</span><span class="p">,</span> <span class="n">Item</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">addVersion</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">addFile</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s">&#39;/path/to/fileA&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">addFile</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s">&#39;/path/to/fileB&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;Publishing files&#39;</span><span class="p">)</span>
+</pre></div>
 </div>
 <p>Using git</p>
 <div class="highlight-python"><pre>$ git clone http://localhost/animal/mammal/wolf
@@ -164,20 +169,6 @@ $ cd wolf
 $ git add thumb.png
 $ git commit thumb.png "adding thumb"
 $ git push</pre>
-</div>
-<p>Using the Python API</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">grit</span> <span class="kn">import</span> <span class="n">Repo</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">Repo</span><span class="p">(</span><span class="s">&#39;/tmp/projects/animal/mammal/wolf&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">addFile</span><span class="p">(</span><span class="s">&#39;/path/to/thumb.png&#39;</span><span class="p">,</span> <span class="s">&#39;Publishing thumbnail&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Adding multiple items to the same version</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">grit</span> <span class="kn">import</span> <span class="n">Item</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">addVersion</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">addFile</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s">&#39;/path/to/fileA&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">addFile</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s">&#39;/path/to/fileB&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;Publishing files&#39;</span><span class="p">)</span>
-</pre></div>
 </div>
 </div>
 <div class="section" id="checking-out-repos">
@@ -191,18 +182,6 @@ $ git push</pre>
 <p>Also with grit, you can check out a single file if you wish.</p>
 <div class="highlight-python"><pre>$ grit co http://localhost/animal/mammal/wolf/thumb.png</pre>
 </div>
-</div>
-</div>
-<div class="section" id="source-code">
-<h2>Source Code<a class="headerlink" href="#source-code" title="Permalink to this headline">¶</a></h2>
-<p>Grit&#8217;s git repo is available on GitHub, which can be browsed at:</p>
-<blockquote>
-<div><ul class="simple">
-<li><a class="reference external" href="https://github.com/rsgalloway/grit">https://github.com/rsgalloway/grit</a></li>
-</ul>
-</div></blockquote>
-<p>and cloned using</p>
-<div class="highlight-python"><pre>$ git clone git://github.com/rsgalloway/grit.git</pre>
 </div>
 </div>
 <div class="section" id="api-reference">
@@ -730,7 +709,7 @@ Git objects are immutable, to save means adding a new item</p>
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Grit v0.1 documentation</a><ul>
-<li><a class="reference internal" href="#installation">Installation</a><ul>
+<li><a class="reference internal" href="#get-grit">Get Grit</a><ul>
 <li><a class="reference internal" href="#requirements">Requirements</a></li>
 </ul>
 </li>
@@ -743,7 +722,6 @@ Git objects are immutable, to save means adding a new item</p>
 <li><a class="reference internal" href="#checking-out-files">Checking out files</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#source-code">Source Code</a></li>
 <li><a class="reference internal" href="#api-reference">API Reference</a><ul>
 <li><a class="reference internal" href="#repo">Repo</a></li>
 <li><a class="reference internal" href="#local">Local</a></li>
