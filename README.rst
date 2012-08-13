@@ -8,14 +8,7 @@ Grit is a simple and light-weight git repository manager or git-compatible digit
 system with limited remote object proxying, a http back-end and easy to use command line, python and 
 cli user interfaces.
 
-- README    this file
-- TODO      list of planned improvements
-- LICENSE   the license under which grit is released
-- bin       executables to be placed in /usr/local/bin
-- grit      python source code
-- test      unit tests
-
-This is early prototype code, is missing many important features and probably won't work for you.
+.. note:: This is early prototype code, is missing many important features and probably won't work for you.
 
 Documentation: http://rsgalloway.github.com/grit
 
@@ -51,12 +44,9 @@ Known issues as of this release:
 1.4 Noted differences from git
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- A branch in grit is different from a branch in git in that a branch is a child of a repo 
-and inherits its files automatically. Files can be overwritten at the branch level. 
-- Grit supports (limited) remote object proxying, so you can browse and get information about
-an object without checking it out.
-- Checkouts in grit are different in that you can check out a given version (latest by default) 
-of a repo, or a single file.
+- A branch in grit is different from a branch in git in that a branch is a child of a repo and inherits its files automatically. Files can be overwritten at the branch level. 
+- Grit supports (limited) remote object proxying, so you can browse and get information about an object without checking it out.
+- Checkouts in grit are different in that you can check out a given version (latest by default) of a repo, or a single file.
 
 
 2 Installation
