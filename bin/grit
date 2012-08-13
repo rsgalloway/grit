@@ -1,0 +1,136 @@
+#!/usr/bin/env python
+# ---------------------------------------------------------------------------------------------
+# Copyright (c) 2011-2012, Ryan Galloway (ryan@rsgalloway.com)
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+#  - Redistributions of source code must retain the above copyright notice, this
+#    list of conditions and the following disclaimer.
+#
+#  - Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
+#    and/or other materials provided with the distribution.
+#
+#  - Neither the name of the software nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
+#    without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# ---------------------------------------------------------------------------------------------
+# docs and latest version available for download at
+#   http://rsgalloway.github.com/grit
+# ---------------------------------------------------------------------------------------------
+
+__version__ = "0.1"
+
+# ---------------------------------------------------------------------------------------------
+# SUMMARY
+# ---------------------------------------------------------------------------------------------
+"""
+This script provides a simple command line user interface to Grit.
+"""
+
+# ---------------------------------------------------------------------------------------------
+# IMPORTS
+# ---------------------------------------------------------------------------------------------
+import os
+import sys
+import socket
+import optparse
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+from grit.cmd import cli
+from grit.cfg import GRIT_SERVER_PORT
+
+# ---------------------------------------------------------------------------------------------
+# MAIN
+# ---------------------------------------------------------------------------------------------
+def main():
+    """
+    Grit's default, simple command-line user interface.
+    """
+
+    usage = """
+    grit COMMAND [URL] [OPTIONS]
+
+    URLs can be either local or http paths.
+
+Commands:
+    new   [URL]           Make new repo
+    co    [URL] [FILES]   Check out from url
+    ci    [URL] [FILES]   Check in to url
+    serve [URL]           Start server"""
+
+    parser = optparse.OptionParser(usage=usage, version=__version__)
+    grit_group = optparse.OptionGroup(parser, 'Grit')
+    server_group = optparse.OptionGroup(parser, 'Server')
+
+    # grit options
+    grit_group.add_option("-r", "--revision", dest="version", default=None,
+                      help="Repo revision number (default: latest)")
+    grit_group.add_option("-m", "--message", dest="message", default=None,
+                      help="Publish message")
+    parser.add_option_group(grit_group)
+
+    # server options
+    server_group.add_option("-p", "--port", dest="port", default=GRIT_SERVER_PORT,
+                      help="Grit server port (default: %s)" % GRIT_SERVER_PORT)
+    parser.add_option_group(server_group)
+
+    (options, args) = parser.parse_args()
+
+    # cmd is always first arg
+    if args:
+        command = args[0]
+        del args[0]
+    else:
+        parser.print_help()
+        return (0)
+
+    # url is always second arg
+    url = os.path.curdir
+    if len(args) > 0:
+        url = args[0]
+        del args[0]
+
+    if command == 'serve':
+        from grit.server import Server
+        server = Server(url, options.port)
+        try:
+            print 'Starting server'
+            server.start()
+        except socket.error, e:
+            print 'Could not start server\n', e
+        except KeyboardInterrupt:
+            print 'Stopping server'
+        finally:
+            server.stop()
+
+    elif command == 'new':
+        cli.new(url=url)
+
+    elif command in ['checkout', 'co']:
+        cli.checkout(url=url, version=options.version)
+
+    elif command in ['checkin', 'ci']:
+        cli.checkin(url=url, files=args, message=options.message)
+
+    else:
+        print 'Unsupported command: %s' % command
+        parser.print_help()
+
+    return (0)
+
+if __name__ == '__main__':
+    sys.exit(main())
