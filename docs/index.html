@@ -1,0 +1,800 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Grit v0.1 documentation &mdash; Grit 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="static/default.css" type="text/css" />
+    <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="static/jquery.js"></script>
+    <script type="text/javascript" src="static/underscore.js"></script>
+    <script type="text/javascript" src="static/doctools.js"></script>
+    <link rel="top" title="Grit 0.1 documentation" href="#" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="#">Grit 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="grit-v0-1-documentation">
+<h1>Grit v0.1 documentation<a class="headerlink" href="#grit-v0-1-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Grit is a simple and light-weight git repository manager or git-compatible digital
+asset management system with limited remote object proxying, a http back-end and
+easy to use command line, python and web user interfaces.</p>
+<p>This is early prototype code, is missing many important features and probably won&#8217;t
+work for you</p>
+<p><em>Features</em></p>
+<blockquote>
+<div><ul class="simple">
+<li>Python WSGI &#8220;Smart HTTP&#8221; server</li>
+<li>Limited remote object proxying</li>
+<li>Stream blob data from remote repositories</li>
+<li>Hierarchical repos with top-down inheritance</li>
+<li>Check out individual blobs</li>
+<li>Python and HTTP+JSON read/write API</li>
+<li>Supports a centralized workflow</li>
+<li>Command line, Python and web UIs</li>
+<li>Git not required</li>
+</ul>
+</div></blockquote>
+<p><em>Known issues as of this release</em></p>
+<blockquote>
+<div><ul class="simple">
+<li>Currently no support for diff, status, submodule or tag</li>
+<li>Renaming a repo breaks external references</li>
+<li>Items tab shows flat list of items, not heirarchical</li>
+<li>Checking in files over HTTP is broken (use git instead)</li>
+<li>Poor performance with large binary files</li>
+<li>Can only checkout repos and blobs, not trees</li>
+<li>Blobs lack icons in the web UI</li>
+<li>Parent links in web UI are broken</li>
+</ul>
+</div></blockquote>
+<p><em>Some noted differences from git</em></p>
+<blockquote>
+<div><ul class="simple">
+<li>A branch in grit is different from a branch in git in that a branch is a child of a
+repo and inherits its files automatically. Files can be overwritten at the branch level.</li>
+<li>Grit supports (limited) remote object proxying, so you can browse and get information about
+an object without checking it out.</li>
+<li>Checkouts in grit are different in that you can check out a given version (latest by default)
+of a repo, or a single file.</li>
+</ul>
+</div></blockquote>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Installing Grit is easily done using
+<a class="reference external" href="http://peak.telecommunity.com/DevCenter/setuptools">setuptools</a>. Assuming it is
+installed, just run the following from the command-line:</p>
+<div class="highlight-none"><div class="highlight"><pre>$ easy_install grit
+</pre></div>
+</div>
+<ul class="simple">
+<li><a class="reference external" href="http://peak.telecommunity.com/DevCenter/setuptools">setuptools</a></li>
+<li><a class="reference external" href="http://peak.telecommunity.com/DevCenter/EasyInstall#installation-instructions">install setuptools</a></li>
+</ul>
+<p>Alternatively, you can install from the distribution using the <tt class="docutils literal"><span class="pre">setup.py</span></tt>
+script:</p>
+<div class="highlight-none"><div class="highlight"><pre>$ python setup.py install
+</pre></div>
+</div>
+<div class="section" id="requirements">
+<h3>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h3>
+<p>Python and the following Python packages are required for Grit to work. Currently, git is required for
+checking in files and some operations like clone.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Python (2.6.5)</li>
+<li>Dulwich (0.7.0)</li>
+<li>Git (optional)</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="tutorial">
+<h2>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h2>
+<p>This is a simple tutorial using the command line interface for grit. The Python API is documented below.
+Note that grit is git-compatible, so you can also use git for many operations albiet with different
+syntax.</p>
+<div class="section" id="create-a-new-repo">
+<h3>Create a new repo<a class="headerlink" href="#create-a-new-repo" title="Permalink to this headline">¶</a></h3>
+<p>The <cite>new</cite> command creates the equivalent of a bare git repository. This &#8220;projects&#8221; repo will act as a
+starting point for creating branches later.</p>
+<div class="highlight-python"><pre>$ grit new /tmp/projects</pre>
+</div>
+</div>
+<div class="section" id="serving-repos">
+<h3>Serving repos<a class="headerlink" href="#serving-repos" title="Permalink to this headline">¶</a></h3>
+<p>Start the grit server on localhost port 80 and serve the &#8220;projects&#8221; repository.</p>
+<div class="highlight-python"><pre>$ grit serve /tmp/projects -p 80</pre>
+</div>
+</div>
+<div class="section" id="creating-branches">
+<h3>Creating branches<a class="headerlink" href="#creating-branches" title="Permalink to this headline">¶</a></h3>
+<p>Let&#8217;s branch some repositories off of the main &#8220;projects&#8221; repository. You can use either URLs or local paths here.</p>
+<div class="highlight-python"><pre>$ grit new http://localhost/animal
+$ grit new http://localhost/animal/mammal
+$ grit new http://localhost/animal/mammal/wolf</pre>
+</div>
+<p>To override any files inherited from a branch parent, simply check in a file to the branch with the same name.
+To get thumbnails in the web UI, check in an appropriate png file called &#8220;thumb.png&#8221;.</p>
+</div>
+<div class="section" id="adding-files">
+<h3>Adding files<a class="headerlink" href="#adding-files" title="Permalink to this headline">¶</a></h3>
+<p>Currently, adding files is only supported on local repositories using grit or git itself, you can&#8217;t check in
+files over HTTP yet. This is a known issue and will be addressed in a near future release. Let&#8217;s check out
+the &#8220;wolf&#8221; branch with git and add a file called &#8220;thumb.png&#8221;. You can also use the Python API to do this
+using the addItem method.</p>
+<p>Using grit</p>
+<div class="highlight-python"><pre>$ grit ci /tmp/projects/animal/mammal/wolf thumb.png</pre>
+</div>
+<p>Using git</p>
+<div class="highlight-python"><pre>$ git clone http://localhost/animal/mammal/wolf
+$ cd wolf
+$ git add thumb.png
+$ git commit thumb.png "adding thumb"
+$ git push</pre>
+</div>
+<p>Using the Python API</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">grit</span> <span class="kn">import</span> <span class="n">Repo</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">Repo</span><span class="p">(</span><span class="s">&#39;/tmp/projects/animal/mammal/wolf&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">addFile</span><span class="p">(</span><span class="s">&#39;/path/to/thumb.png&#39;</span><span class="p">,</span> <span class="s">&#39;Publishing thumbnail&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Adding multiple items to the same version</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">grit</span> <span class="kn">import</span> <span class="n">Item</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">addVersion</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">addFile</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s">&#39;/path/to/fileA&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">addFile</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s">&#39;/path/to/fileB&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;Publishing files&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="checking-out-repos">
+<h3>Checking out repos<a class="headerlink" href="#checking-out-repos" title="Permalink to this headline">¶</a></h3>
+<p>You can use grit to checkout the latest version of a repo (with revision depth=0), including all of the automatically inherited files from its branch parents.</p>
+<div class="highlight-python"><pre>$ grit co http://localhost/animal/mammal/wolf</pre>
+</div>
+</div>
+<div class="section" id="checking-out-files">
+<h3>Checking out files<a class="headerlink" href="#checking-out-files" title="Permalink to this headline">¶</a></h3>
+<p>Also with grit, you can check out a single file if you wish.</p>
+<div class="highlight-python"><pre>$ grit co http://localhost/animal/mammal/wolf/thumb.png</pre>
+</div>
+</div>
+</div>
+<div class="section" id="source-code">
+<h2>Source Code<a class="headerlink" href="#source-code" title="Permalink to this headline">¶</a></h2>
+<p>Grit&#8217;s git repo is available on GitHub, which can be browsed at:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference external" href="https://github.com/rsgalloway/grit">https://github.com/rsgalloway/grit</a></li>
+</ul>
+</div></blockquote>
+<p>and cloned using</p>
+<div class="highlight-python"><pre>$ git clone git://github.com/rsgalloway/grit.git</pre>
+</div>
+</div>
+<div class="section" id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
+<p>The following API docs cover the major classes.</p>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
+<span class="target" id="module-grit"></span><div class="section" id="repo">
+<h3>Repo<a class="headerlink" href="#repo" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="grit.Repo">
+<em class="property">class </em><tt class="descclassname">grit.</tt><tt class="descname">Repo</tt><big>(</big><em>url</em><big>)</big><a class="headerlink" href="#grit.Repo" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="grit.Repo.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>url</em><big>)</big><a class="headerlink" href="#grit.Repo.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new Repo instance. Most method and attribute calls are passed
+to the underlying repo object, which is either an instance of repo.Local
+or repo.Proxy, which is a proxy representation of a Local object served
+by the wsgi server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>url</strong> &#8211; HTTP URL or file path.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">New repo.Repo instance.</td>
+</tr>
+</tbody>
+</table>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">Repo</span><span class="p">(</span><span class="s">&#39;http://localhost/projects/myrepo&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">Repo</span><span class="p">(</span><span class="s">&#39;/tmp/myrepo&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Either way, you can make the same method and attribute calls:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">name</span>
+<span class="go">&#39;myrepo&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">setDescription</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s">&#39;my project repository&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">versions</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s">&#39;relative/path/to/file&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="grit.Repo.new">
+<em class="property">classmethod </em><tt class="descname">new</tt><big>(</big><em>url</em>, <em>clone_from=None</em>, <em>bare=True</em><big>)</big><a class="headerlink" href="#grit.Repo.new" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new Repo instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>url</strong> &#8211; Path or remote URL of new repo.</li>
+<li><strong>clone_from</strong> &#8211; Path or URL of repo to clone from.</li>
+<li><strong>bare</strong> &#8211; Create as bare repo.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">grit.Repo instance.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">Repo</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s">&#39;/tmp/projects&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span>
+<span class="go">&lt;grit.Repo &quot;/tmp/projects&quot;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="grit.Repo.clone">
+<tt class="descname">clone</tt><big>(</big><em>path=None</em>, <em>bare=False</em><big>)</big><a class="headerlink" href="#grit.Repo.clone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clone the repository to path (requires git).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> &#8211; Destination filesystem path.</li>
+<li><strong>bare</strong> &#8211; Make this a bare repo.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">grit.Repo instance.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">Repo</span><span class="p">(</span><span class="s">&quot;http://localhost/projects/a/b/c&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="s">&#39;/tmp&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span>
+<span class="go">&lt;grit.Repo &quot;/tmp/c&quot;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="local">
+<h3>Local<a class="headerlink" href="#local" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="grit.Local">
+<em class="property">class </em><tt class="descclassname">grit.</tt><tt class="descname">Local</tt><big>(</big><em>path=None</em><big>)</big><a class="headerlink" href="#grit.Local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Local repository class.</p>
+<dl class="method">
+<dt id="grit.Local.addFile">
+<tt class="descname">addFile</tt><big>(</big><em>path</em>, <em>msg=None</em><big>)</big><a class="headerlink" href="#grit.Local.addFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>add a new file(s)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="grit.Local.addItem">
+<tt class="descname">addItem</tt><big>(</big><em>item</em>, <em>message=None</em><big>)</big><a class="headerlink" href="#grit.Local.addItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>add a new Item class object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="grit.Local.addVersion">
+<tt class="descname">addVersion</tt><big>(</big><big>)</big><a class="headerlink" href="#grit.Local.addVersion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new Version, to which Items can be added and removed, and
+committed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">New Version instance.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="grit.Local.branch">
+<tt class="descname">branch</tt><big>(</big><em>name</em>, <em>desc=None</em><big>)</big><a class="headerlink" href="#grit.Local.branch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a branch of this repo at &#8216;name&#8217;.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> &#8211; Name of new branch</li>
+<li><strong>desc</strong> &#8211; Repo description.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">New Local instance.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="grit.Local.date">
+<tt class="descname">date</tt><a class="headerlink" href="#grit.Local.date" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">datetime object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="grit.Local.getDescription">
+<tt class="descname">getDescription</tt><big>(</big><big>)</big><a class="headerlink" href="#grit.Local.getDescription" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">repository description</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="grit.Local.git">
+<tt class="descname">git</tt><a class="headerlink" href="#grit.Local.git" title="Permalink to this definition">¶</a></dt>
+<dd><p>git command object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="grit.Local.items">
+<tt class="descname">items</tt><big>(</big><em>path=None</em>, <em>version=None</em><big>)</big><a class="headerlink" href="#grit.Local.items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of items.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> &#8211; Regex filter on item path.</li>
+<li><strong>version</strong> &#8211; Repo versions number/index.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">List of Item class objects.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="grit.Local.new">
+<em class="property">classmethod </em><tt class="descname">new</tt><big>(</big><em>path</em>, <em>desc=None</em>, <em>bare=True</em><big>)</big><a class="headerlink" href="#grit.Local.new" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new bare repo.Local instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> &#8211; Path to new repo.</li>
+<li><strong>desc</strong> &#8211; Repo description.</li>
+<li><strong>bare</strong> &#8211; Create as bare repo.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">New repo.Local instance.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="grit.Local.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#grit.Local.parent" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Remote origin as Proxy instance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="grit.Local.setDescription">
+<tt class="descname">setDescription</tt><big>(</big><em>desc='No description'</em><big>)</big><a class="headerlink" href="#grit.Local.setDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>sets repository description</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="grit.Local.setVersion">
+<tt class="descname">setVersion</tt><big>(</big><em>version</em><big>)</big><a class="headerlink" href="#grit.Local.setVersion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checkout a version of the repo.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>version</strong> &#8211; Version number.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="grit.Local.versions">
+<tt class="descname">versions</tt><big>(</big><em>version=None</em><big>)</big><a class="headerlink" href="#grit.Local.versions" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of Versions of this repository.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>version</strong> &#8211; Version index.</li>
+<li><strong>rev</strong> &#8211; Commit sha or ref.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">List of Version objects matching params.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="proxy">
+<h3>Proxy<a class="headerlink" href="#proxy" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="grit.Proxy">
+<em class="property">class </em><tt class="descclassname">grit.</tt><tt class="descname">Proxy</tt><big>(</big><em>url</em><big>)</big><a class="headerlink" href="#grit.Proxy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remote object proxy class.</p>
+<dl class="method">
+<dt id="grit.Proxy.request">
+<tt class="descname">request</tt><big>(</big><em>cmd</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#grit.Proxy.request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request data fromo the server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cmd</strong> &#8211; repo handler command.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Result.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="item">
+<h3>Item<a class="headerlink" href="#item" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="grit.Item">
+<em class="property">class </em><tt class="descclassname">grit.</tt><tt class="descname">Item</tt><big>(</big><em>parent</em>, <em>sha</em>, <em>path</em>, <em>mode=33188</em><big>)</big><a class="headerlink" href="#grit.Item" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="grit.Item.blob">
+<tt class="descname">blob</tt><a class="headerlink" href="#grit.Item.blob" title="Permalink to this definition">¶</a></dt>
+<dd><p>read blob on access only because get_object is slow</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="grit.Item.checkout">
+<tt class="descname">checkout</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#grit.Item.checkout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check out file data to path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> &#8211; Filesystem path to check out item to.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if successful.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="grit.Item.data">
+<tt class="descname">data</tt><big>(</big><big>)</big><a class="headerlink" href="#grit.Item.data" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">blob data</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="grit.Item.file">
+<tt class="descname">file</tt><big>(</big><big>)</big><a class="headerlink" href="#grit.Item.file" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">File-like StringIO object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="grit.Item.from_path">
+<em class="property">classmethod </em><tt class="descname">from_path</tt><big>(</big><em>repo</em>, <em>path</em>, <em>name=None</em><big>)</big><a class="headerlink" href="#grit.Item.from_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new Item from a file path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>repo</strong> &#8211; Repo object.</li>
+<li><strong>path</strong> &#8211; File path.</li>
+<li><strong>name</strong> &#8211; Name of item (to override original file name).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">New Item class instance.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="grit.Item.from_string">
+<em class="property">classmethod </em><tt class="descname">from_string</tt><big>(</big><em>repo</em>, <em>name</em>, <em>string</em><big>)</big><a class="headerlink" href="#grit.Item.from_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new Item from a data stream.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>repo</strong> &#8211; Repo object.</li>
+<li><strong>name</strong> &#8211; Name of item.</li>
+<li><strong>data</strong> &#8211; Data stream.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">New Item class instance.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="grit.Item.save">
+<tt class="descname">save</tt><big>(</big><em>msg=None</em><big>)</big><a class="headerlink" href="#grit.Item.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify item data and commit to repo. 
+Git objects are immutable, to save means adding a new item</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>msg</strong> &#8211; Commit message.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="grit.Item.versions">
+<tt class="descname">versions</tt><big>(</big><em>rev=None</em>, <em>index=None</em><big>)</big><a class="headerlink" href="#grit.Item.versions" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of Versions for this Item</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="version">
+<h3>Version<a class="headerlink" href="#version" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="grit.Version">
+<em class="property">class </em><tt class="descclassname">grit.</tt><tt class="descname">Version</tt><big>(</big><em>repo</em>, <em>commit</em>, <em>tree=None</em><big>)</big><a class="headerlink" href="#grit.Version" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="classmethod">
+<dt id="grit.Version.new">
+<em class="property">classmethod </em><tt class="descname">new</tt><big>(</big><em>repo</em><big>)</big><a class="headerlink" href="#grit.Version.new" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new version of a repo.Local object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>repo</strong> &#8211; Instance of repo.Local.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">New Version instance.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="grit.Version.save">
+<tt class="descname">save</tt><big>(</big><em>message</em><big>)</big><a class="headerlink" href="#grit.Version.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add version to repo object store, set repo head to version sha.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>message</strong> &#8211; Message string.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="grit.Version.version">
+<tt class="descname">version</tt><a class="headerlink" href="#grit.Version.version" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Version number / index in list of versions</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="server">
+<h3>Server<a class="headerlink" href="#server" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="grit.Server">
+<em class="property">class </em><tt class="descclassname">grit.</tt><tt class="descname">Server</tt><big>(</big><em>base_dir='.'</em>, <em>port=8080</em>, <em>uri_marker=''</em><big>)</big><a class="headerlink" href="#grit.Server" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assembles basic WSGI-compatible application providing functionality of git-http-backend.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Grit v0.1 documentation</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a><ul>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tutorial">Tutorial</a><ul>
+<li><a class="reference internal" href="#create-a-new-repo">Create a new repo</a></li>
+<li><a class="reference internal" href="#serving-repos">Serving repos</a></li>
+<li><a class="reference internal" href="#creating-branches">Creating branches</a></li>
+<li><a class="reference internal" href="#adding-files">Adding files</a></li>
+<li><a class="reference internal" href="#checking-out-repos">Checking out repos</a></li>
+<li><a class="reference internal" href="#checking-out-files">Checking out files</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#source-code">Source Code</a></li>
+<li><a class="reference internal" href="#api-reference">API Reference</a><ul>
+<li><a class="reference internal" href="#repo">Repo</a></li>
+<li><a class="reference internal" href="#local">Local</a></li>
+<li><a class="reference internal" href="#proxy">Proxy</a></li>
+<li><a class="reference internal" href="#item">Item</a></li>
+<li><a class="reference internal" href="#version">Version</a></li>
+<li><a class="reference internal" href="#server">Server</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="#">Grit 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011-2012, Ryan Galloway &lt;ryan@rsgalloway.com&gt;.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

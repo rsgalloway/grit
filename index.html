@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+<title>Grit</title>
+<meta charset=utf-8>
+<style type=text/css>
+body {
+    background: #ffffff;
+    font-family: arial;
+    padding-left:100px;
+}
+h1 {
+    margin: 50px 0 0 0;
+    height: 60px;
+    font-size: 46px;
+    font-family: helvetica;
+}
+.r {
+    color:red;
+    position:relative;
+    top:4px;
+}
+.rounded {
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -khtml-border-radius: 20px;
+    border-radius: 20px;
+}
+pre {
+    padding: 10px 30px;
+    margin: 15px -30px;
+    width: 500px;
+    line-height: 1.3;
+    font-family: 'Consolas', 'Menlo', 'Ubuntu Mono', 'Deja Vu Sans Mono', 'Bitstream Vera Sans Mono', monospace!important;
+    font-size: 15px;
+    background: #333;
+    display: block;
+    white-space: pre;
+    color: black;
+}
+blockquote {
+    margin: 0;
+    font-style: italic;
+    font-size: 18px;
+    width: 500px;
+    color: #444;
+}
+.watch {
+    float: left;
+    position: absolute;
+    left: 202px;
+    top: 48px;
+}
+.footer {
+    font-size: 13px; 
+    color: #888; 
+    text-align: left;
+    margin-top: 25px; 
+}
+.comment {
+    color: #CCC;
+}
+.code {
+    color: #63E463;
+}
+</style>
+
+<div>
+<h1>G<span class="r">r</span>it</h1>
+
+<p class="watch">
+<iframe src="http://ghbtns.com/github-btn.html?user=rsgalloway&amp;repo=grit&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="160px" height="35px" style="float: right"></iframe>
+</p>
+</div>
+
+<blockquote>
+Hierarchical git repos with remote object proxying and atomic check outs.
+</blockquote>
+
+<pre class="rounded">
+<span class="comment"># serve a local repo</span>
+<span class="code">$ grit serve /path/to/repo</span>
+
+<span class="comment"># check out a remote repo or file</span>
+<span class="code">$ grit co http://host/repo/file</span>
+
+<span class="comment"># check out a local repo or file</span>
+<span class="code">$ grit co /repo/file</span>
+
+<span class="comment"># create a new remote repo</span>
+<span class="code">$ grit new http://host/repo</span>
+
+<span class="comment"># create a hierarchical branch of repo</span>
+<span class="code">$ grit new http://host/repo/branch</span>
+
+<span class="comment"># check in a file to a remote branch</span>
+<span class="code">$ grit ci http://host/repo/branch file.abc</span>
+</pre>
+
+More info, including how to replace this page, can be found <a href="http://rsgalloway.github.com/grit/docs">here</a>.
+
+<a href="http://github.com/rsgalloway/grit"><img style="position: fixed; top: 0; right: 0; border: 0;"
+  src="http://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+
+<p class=footer>
+  &copy; Copyright 2011-2012 <a href='http://rsgalloway.com/'>Ryan Galloway</a>.
+</p>
+
+
+</html>
