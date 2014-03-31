@@ -8,9 +8,8 @@ Grit is a simple and light-weight git repository manager or git-compatible digit
 system with limited remote object proxying, a http back-end and easy to use command line, python and 
 cli user interfaces.
 
-.. note:: This is early prototype code, is missing many important features and probably won't work for you.
+This is early prototype code, is missing many important features and probably won't work for you.
 
-Documentation: http://rsgalloway.github.com/grit
 
 1.1 Features
 ~~~~~~~~~~~~
@@ -25,6 +24,7 @@ Documentation: http://rsgalloway.github.com/grit
 - Command line, Python and web UIs
 - Git not required
 
+
 1.2 Known Issues
 ~~~~~~~~~~~~~~~~
 
@@ -34,12 +34,14 @@ Known issues as of this release:
 - Poor performance with large binary files
 - Can only checkout repos and blobs, not trees
 
+
 1.3 Requirements
 ~~~~~~~~~~~~~~~~
 
 - Python (2.6.5)
 - Dulwich (0.7.0)
 - Git (optional)
+
 
 1.4 Noted differences from git
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -54,7 +56,7 @@ Known issues as of this release:
 
 ::
 
-  $ easy_install grit
+  $ pip install grit
 
 or, download the source and ::
 
@@ -84,6 +86,96 @@ The following environment variables are used, but not required. ::
   co      check out files from repo at url
   ci      check in files to repo at url
   serve   serve a repo or directory of repos
+  
+
+Create a new repo
+~~~~~~~~~~~~~~~~~
+
+The “new” command creates the equivalent of a bare git repository. This “projects” repo will act as a 
+starting point for creating branches later. ::
+
+    $ grit new /tmp/projects
+
+Using the Python API ::
+
+    >>> from grit import Repo
+    >>> r = Repo.new('/var/tmp/myrepo')
+    >>> r
+    <grit.Repo "/var/tmp/myrepo">
+    >>> r.name
+    'myrepo'
+    >>> r.items()
+    []
+    
+
+Serving repos
+~~~~~~~~~~~~~
+
+Start the grit server on localhost port 80 and serve the “projects” repository. ::
+
+    $ grit serve /tmp/projects -p 80
+
+
+Creating branches
+~~~~~~~~~~~~~~~~~
+
+Let’s branch some repositories off of the main “projects” repository. You can use either URLs or local 
+paths here. ::
+
+    $ grit new http://localhost/animal
+    $ grit new http://localhost/animal/mammal
+    $ grit new http://localhost/animal/mammal/wolf
+
+To override any files inherited from a branch parent, simply check in a file to the branch with the same 
+name. To get thumbnails in the web UI, check in an appropriate png file called “thumb.png”.
+
+
+Adding files
+~~~~~~~~~~~~
+
+Currently, adding files is only supported on local repositories using grit or git itself. This is a known issue and will be addressed in a near future release. Let’s check out the “wolf” branch with git and add a file called “thumb.png”. You can also use the Python API to do this using the addItem method.
+
+Using grit ::
+
+    $ grit ci /tmp/projects/animal/mammal/wolf thumb.png
+
+Using git ::
+
+    $ git clone http://localhost/animal/mammal/wolf
+    $ cd wolf
+    $ git add thumb.png
+    $ git commit thumb.png "adding thumb"
+    $ git push
+
+Using the Python API ::
+
+    >>> from grit import Repo, Item
+    >>> r = Repo('/tmp/projects/animal/mammal/wolf')
+    >>> v = r.addVersion()
+    >>> i = Item.from_path(repo=r, path='/path/to/thumb.png')
+    >>> v.addItem(i)
+    >>> v.save('Publishing thumbnail')
+    >>> v.items()
+    [<grit.Item "thumb.png">]
+    >>> r.versions()
+    [<grit.Version "0">, <grit.Version "1">]
+
+
+Checking out repos
+~~~~~~~~~~~~~~~~~~
+
+You can use grit to checkout the latest version of a repo (with revision depth=0), including all 
+of the automatically inherited files from its branch parents. ::
+
+    $ grit co http://localhost/animal/mammal/wolf
+
+
+Checking out files
+~~~~~~~~~~~~~~~~~~
+
+Also with grit, you can check out a single file if you wish. ::
+
+    $ grit co http://localhost/animal/mammal/wolf/thumb.png
 
 
 4 License
