@@ -20,7 +20,6 @@ setup(
     author_email='ryan@rsgalloway.com',
     version='0.1',
     description='Grit is a simple git repo manager with limited remote object proxying, a http back-end and simple cli.',
-    long_description=open(os.path.join(os.path.dirname(__file__), 'README.rst')).read(),
     url='http://www.github.com/rsgalloway/grit',
     license='New BSD License',
     keywords = "git repo manager remote object proxy",
